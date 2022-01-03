@@ -1,4 +1,9 @@
 
+# build
+*.egg-info
+
 # cache
 __pycache__/
 
+# editors
+*.swp
