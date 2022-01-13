@@ -2,8 +2,15 @@
 # build
 *.egg-info
 
+# docs build
+site/
+
 # cache
 __pycache__/
+.tox/
 
 # editors
 *.swp
+
+# OS
+.DS_Store
