@@ -26,7 +26,13 @@ class Account:
     name: str
     entries: list[JournalEntry] = Factory(list)
 
-    def journal_entry(self, sign: Sign, amount: Decimal | str) -> JournalEntry:
-        je = JournalEntry(sign=sign, amnt=Decimal(amount))
+    def journal_entry(self, sign: Sign | str, amount: Decimal | str) -> JournalEntry:
+        je = JournalEntry(sign=Sign(sign), amnt=Decimal(amount))
         self.entries.append(je)
         return je
+
+    def balance(self):
+        if self.entries:
+            return sum(self.entries[1:], start=self.entries[0])
+        return JournalEntry(sign=Sign.D, amnt=Decimal("0"))
+
