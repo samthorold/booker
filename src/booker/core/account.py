@@ -1,3 +1,4 @@
+from datetime import datetime
 from decimal import Decimal
 
 from attrs import define, Factory
@@ -26,13 +27,21 @@ class Account:
     name: str
     entries: list[JournalEntry] = Factory(list)
 
-    def journal_entry(self, sign: Sign | str, amount: Decimal | str) -> JournalEntry:
-        je = JournalEntry(sign=Sign(sign), amnt=Decimal(amount))
+    def _je(
+        self, sign: Sign, amount: Decimal, date: datetime | None = None
+    ) -> JournalEntry:
+        date = datetime.utcnow() if date is None else date
+        je = JournalEntry(sign=sign, amnt=amount, date=date)
         self.entries.append(je)
         return je
+
+    def dr(self, amount: Decimal, date: datetime | None = None) -> JournalEntry:
+        return self._je(sign=Sign.D, amount=amount, date=date)
+
+    def cr(self, amount: Decimal, date: datetime | None = None) -> JournalEntry:
+        return self._je(sign=Sign.C, amount=amount, date=date)
 
     def balance(self):
         if self.entries:
             return sum(self.entries[1:], start=self.entries[0])
-        return JournalEntry(sign=Sign.D, amnt=Decimal("0"))
-
+        return JournalEntry(sign=Sign.D, amnt=Decimal("0"), date=datetime.utcnow())
