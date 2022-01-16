@@ -23,9 +23,15 @@ def convert_sign(obj: str | Sign) -> Sign:
     Exmaples
     >>> convert_sign("D")
     <Sign.D: 1>
+    >>> convert_sign("c")
+    <Sign.C: -1>
     >>> convert_sign(-1)
     <Sign.C: -1>
     >>> convert_sign("James Milner")
+    Traceback (most recent call last):
+    ...
+    ValueError: ...
+    >>> convert_sign(4)
     Traceback (most recent call last):
     ...
     ValueError: ...
@@ -55,6 +61,10 @@ def convert_datetime(obj: str | datetime) -> datetime:
     Traceback (most recent call last):
     ...
     ValueError: ...
+    >>> convert_datetime(4)
+    Traceback (most recent call last):
+    ...
+    ValueError: ...
     """
     if isinstance(obj, str):
         try:
@@ -75,6 +85,10 @@ def convert_decimal(obj: str | Decimal) -> Decimal:
     >>> from decimal import Decimal
     >>> convert_decimal("100")
     Decimal('100')
+    >>> convert_decimal(range(10))
+    Traceback (most recent call last):
+    ...
+    ValueError: ...
     """
     try:
         return Decimal(obj)
