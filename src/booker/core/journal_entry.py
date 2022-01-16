@@ -82,7 +82,7 @@ def convert_decimal(obj: str | Decimal) -> Decimal:
         raise ValueError(f"Cannot convert {obj} to Decimal") from e
 
 
-@define
+@define(kw_only=True)
 class JournalEntry:
     """
 

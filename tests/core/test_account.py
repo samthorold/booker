@@ -12,6 +12,6 @@ def test_acount_balance():
     _ = acct.cr("5")
 
     got = acct.balance()
-    want = JournalEntry(Sign.D, Decimal("195"), dt.utcnow())
+    want = JournalEntry(sign=Sign.D, amnt=Decimal("195"), date=dt.utcnow())
 
     assert got.sign == want.sign and got.amnt == want.amnt
