@@ -1,5 +1,6 @@
 from datetime import datetime
 from decimal import Decimal
+from numbers import Real
 
 from attrs import define, Factory
 
@@ -13,6 +14,7 @@ class Account:
     Attributes:
         code: Unique code.
         name: Human-friendly name.
+        entries: JournalEntry objects associated with this Account.
 
     Examples:
     >>> a = Account(code="1", name="Assets")
@@ -20,6 +22,12 @@ class Account:
     '1'
     >>> a.name
     'Assets'
+    >>> a.entries
+    []
+    >>> _ = a.dr("100.25")
+    >>> bal = a.balance()
+    >>> bal.amnt
+    Decimal('100.25')
 
     """
 
@@ -28,17 +36,21 @@ class Account:
     entries: list[JournalEntry] = Factory(list)
 
     def _je(
-        self, sign: Sign, amount: Decimal, date: datetime | None = None
+        self, sign: Sign, amount: str | Decimal, date: str | datetime | None = None
     ) -> JournalEntry:
         date = datetime.utcnow() if date is None else date
         je = JournalEntry(sign=sign, amnt=amount, date=date)
         self.entries.append(je)
         return je
 
-    def dr(self, amount: Decimal, date: datetime | None = None) -> JournalEntry:
+    def dr(
+        self, amount: str | Decimal, date: str | datetime | None = None
+    ) -> JournalEntry:
         return self._je(sign=Sign.D, amount=amount, date=date)
 
-    def cr(self, amount: Decimal, date: datetime | None = None) -> JournalEntry:
+    def cr(
+        self, amount: str | Decimal, date: str | datetime | None = None
+    ) -> JournalEntry:
         return self._je(sign=Sign.C, amount=amount, date=date)
 
     def balance(self):

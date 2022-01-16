@@ -68,19 +68,13 @@ def convert_datetime(obj: str | datetime) -> datetime:
     raise ValueError(f"{obj} must be str or datetime object")
 
 
-def convert_decimal(obj: str | int | float | Decimal) -> Decimal:
+def convert_decimal(obj: str | Decimal) -> Decimal:
     """
 
     Examples
     >>> from decimal import Decimal
     >>> convert_decimal("100")
     Decimal('100')
-    >>> convert_decimal("100") == convert_decimal(100)
-    True
-    >>> convert_decimal("100") == convert_decimal(100.0)
-    True
-    >>> convert_decimal(Decimal("100")) == convert_decimal(100.0)
-    True
     """
     try:
         return Decimal(obj)
@@ -93,7 +87,7 @@ class JournalEntry:
     """
 
     Examples
-    >>> JournalEntry(sign="D", amnt=100, date="2022-01-01")
+    >>> JournalEntry(sign="D", amnt="100", date="2022-01-01")
     JournalEntry(sign=<Sign.D: 1>, amnt=Decimal('100'), date=datetime.datetime(2022, 1, 1, 0, 0))
     """
 
