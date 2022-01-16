@@ -37,8 +37,9 @@ jobs:
           python -m pip install --upgrade pip setuptools wheel
           python -m pip install --upgrade virtualenv tox tox-gh-actions
       - run: "python -m tox"
+      - run: "ls -la"
 
-      - name: Upload coverage data
+      - name: "Upload coverage data"
         uses: "actions/upload-artifact@v2"
         with:
           name: coverage-data
