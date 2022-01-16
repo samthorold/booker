@@ -5,3 +5,16 @@ build-backend = "setuptools.build_meta"
 [tool.pytest.ini_options]
 addopts = "--doctest-modules"
 
+[tool.coverage.run]
+parallel = true
+branch = true
+source = ["booker",]
+
+[tool.coverage.paths]
+source = ["src", ".tox/*/site-packages"]
+
+[tool.coverage.report]
+show_missing = true
+exclude_lines = [
+    "pragma: no cover",
+]
