@@ -9,6 +9,7 @@ site/
 
 # coverage
 .coverage
+.coverage.*
 
 # cache
 __pycache__/
