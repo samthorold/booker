@@ -36,6 +36,7 @@ jobs:
           python -m site
           python -m pip install --upgrade pip setuptools wheel
           python -m pip install --upgrade virtualenv tox tox-gh-actions
+      - run: "pwd"
       - run: "python -m tox"
       - run: "ls -la"
 
