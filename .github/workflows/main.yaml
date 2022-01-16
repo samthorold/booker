@@ -39,17 +39,12 @@ jobs:
       - run: "pwd"
       - run: "python -m tox"
       - run: "ls -la"
-      - run: "coverage run -m pytest"
-      - run: "ls -la"
-      - run: "coverage report"
-      - run: "coverage combine"
-      - run: "ls -la"
 
       - name: "Upload coverage data"
         uses: "actions/upload-artifact@v2"
         with:
           name: coverage-data
-          path: ".coverage"
+          path: ".coverage.*"
           if-no-files-found: ignore
 
 
