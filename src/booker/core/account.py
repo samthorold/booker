@@ -1,10 +1,18 @@
 from datetime import datetime
 from decimal import Decimal
-from numbers import Real
+from enum import Enum
 
 from attrs import define, Factory
 
 from booker.core.journal_entry import JournalEntry, Sign
+
+
+class AccountType(Enum):
+    ASSET = "ASSET"
+    LIABILITY = "LIABILITY"
+    CAPITAL = "CAPITAL"
+    INCOME = "INCOME"
+    EXPENSE = "EXPENSE"
 
 
 @define(kw_only=True)
@@ -13,26 +21,17 @@ class Account:
 
     Attributes:
         code: Unique code.
+        type: Account type; asset, liabilitity, capital, income, or expense
         name: Human-friendly name.
+        description: Description of entries to be associated with the account.
         entries: JournalEntry objects associated with this Account.
-
-    Examples:
-    >>> a = Account(code="1", name="Assets")
-    >>> a.code
-    '1'
-    >>> a.name
-    'Assets'
-    >>> a.entries
-    []
-    >>> _ = a.dr("100.25")
-    >>> bal = a.balance()
-    >>> bal.amnt
-    Decimal('100.25')
 
     """
 
     code: str
+    type: AccountType
     name: str
+    description: str
     entries: list[JournalEntry] = Factory(list)
 
     def _je(

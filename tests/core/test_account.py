@@ -6,7 +6,7 @@ from booker.core.journal_entry import JournalEntry, Sign
 
 
 def test_acount_balance():
-    acct = Account(code="1", name="a", entries=[])
+    acct = Account(code="1", type="ASSET", name="a", description="a", entries=[])
 
     got = acct.balance()
     want = JournalEntry(sign=Sign.D, amnt=Decimal("0"), date=dt.utcnow())
