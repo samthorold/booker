@@ -34,9 +34,6 @@ class Account:
     name: str
     entries: set[Entry] = field(default_factory=set)
 
-    def _entry(self, ref: str, date: date, value: int) -> Entry:
-        return Entry(ref=ref, date=date, value=value)
-
     def balance(self) -> int:
         """Sum of the Entry objects associated with the Account.
 
