@@ -1,6 +1,9 @@
 docs-serve:
 	venv/bin/python -m mkdocs serve
 
+docs-deploy:
+	venv/bin/python -m mkdocs gh-deploy
+
 fmt:
 	venv/bin/python -m black src tests
 
