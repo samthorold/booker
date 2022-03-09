@@ -1,5 +1,5 @@
 site_name: booker
 nav:
     - Home: index.md
-    - About: about.md
+    - Accounting: accounting_background.md
 

@@ -1,9 +1,12 @@
+docs-serve:
+	venv/bin/python -m mkdocs serve
+
 fmt:
-	black src tests
+	venv/bin/python -m black src tests
 
 test:
-	pytest
+	venv/bin/python -m pytest
 
 watch-tests:
-	find src tests -name "*.py" | entr pytest
+	find src tests -name "*.py" | entr venv/bin/python -m pytest
 
