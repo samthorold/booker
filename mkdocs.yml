@@ -1,5 +1,17 @@
 site_name: booker
+
+theme:
+    name: material
+
+plugins:
+    - search
+    - mkdocstrings
+
 nav:
     - Home: index.md
-    - About: about.md
+    - Getting Started: getting_started.md
+    - API:
+        - Core: core.md
+    - Accounting:
+        - Background: accounting_background.md
 
