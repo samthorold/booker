@@ -2,42 +2,39 @@ from datetime import date
 
 import pytest
 
-from booker.core import Account, Entry, Sign
+from booker.core import Account, Entry
+
+
+ENTRY = Entry(ref="001", date=date(2022, 1, 1), value=100)
 
 
 def test_entry_is_immutable():
-    e = Entry(
-        ref="001",
-        date=date(2022, 1, 1),
-        sign=Sign.DEBIT,
-        amount=100,
-    )
-
     # dataclasses.FrozonInstanceError is subclass of AttributeError
     with pytest.raises(AttributeError):
-        e.amount = 200
+        ENTRY.ref = "002"
 
 
 def test_entry_hashable():
-    e = Entry(
-        ref="001",
-        date=date(2022, 1, 1),
-        sign=Sign.DEBIT,
-        amount=100,
-    )
-    hash(e)
-
-
-def test_no_entry_type_conversion():
-    e = Entry(
-        ref="001",
-        date=date(2022, 1, 1),
-        sign=1,
-        amount=100,
-    )
-
-    assert isinstance(e.sign, int), type(e.sign)
+    hash(ENTRY)
 
 
 def test_init_account_with_no_entries():
     _ = Account(code="1", name="a")
+
+
+def test_account_dr_cr():
+    a = Account(code="1", name="a")
+    e = a.debit("001", date(2022, 1, 1), 100)
+    assert isinstance(e, Entry)
+    assert e.value == 100
+    e = a.credit("001", date(2022, 1, 1), 100)
+    assert isinstance(e, Entry)
+    assert e.value == -100
+
+
+def test_account_balance():
+    a = Account(code="1", name="a")
+    _ = a.debit("001", date(2022, 1, 1), 100)
+    _ = a.credit("001", date(2022, 1, 1), 200)
+
+    assert a.balance() == -100
