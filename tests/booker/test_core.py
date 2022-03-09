@@ -25,7 +25,7 @@ def test_entry_hashable():
         sign=Sign.DEBIT,
         amount=100,
     )
-    hash(e) 
+    hash(e)
 
 
 def test_no_entry_type_conversion():
@@ -41,4 +41,3 @@ def test_no_entry_type_conversion():
 
 def test_init_account_with_no_entries():
     _ = Account(code="1", name="a")
-
