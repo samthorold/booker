@@ -3,7 +3,6 @@ from datetime import date
 from enum import Enum
 
 
-
 class Sign(Enum):
     DEBIT = 1
     CREDIT = -1
@@ -22,4 +21,3 @@ class Account:
     code: str
     name: str
     entries: set[Entry] = field(default_factory=set)
-
