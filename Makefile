@@ -1,3 +1,6 @@
+fmt:
+	black src tests
+
 test:
 	pytest
 
