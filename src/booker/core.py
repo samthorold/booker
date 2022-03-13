@@ -10,7 +10,7 @@ class Entry:
     Args:
         ref: Reference ID for 1+ Entry objects.
         date: Date of Entry.
-        Value: Value of Entry in pence.
+        value: Value of Entry in pence.
 
     """
 

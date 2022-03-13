@@ -2,13 +2,16 @@
 
 ## Accounting cycle
 
-1. Journal entries
-1. Unadjusted trial balance
-1. Adjusting entries
-1. Adjusted trial balance
-1. Financial statements
-1. Closing entries
-1. Post-closing trial balance
+```mermaid
+graph TB
+  A[Journal Entries] --> B[Unadjusted Trial Balance]
+  B --> C[Adjusting Entries]
+  C --> D[Adjusted Trial Balance]
+  D --> E[Financial Statements]
+  E --> F[Closing Entries]
+  F --> G[Post-closing Trial Balance]
+  G --> A
+```
 
 ## Types of account
 
@@ -26,15 +29,18 @@ debtor and creditor for example.
 ### Statement of financial position - Balance sheet
 
 Assets
+
 - Cash
 - AR
 - Inventory
 
 Capital
+
 - Owners equity
 - Retained earnings
 
 Liabilities
+
 - AP
 - Wages payable
 - Current portion of long-term debt
@@ -43,10 +49,12 @@ Liabilities
 ### Statement of financial performance - Income statement
 
 Income
+
 - Sales
 - Other income
 
 Expenses
+
 - Cost of sales
 - General and administrative
 - Other expenses
