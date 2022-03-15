@@ -121,6 +121,65 @@ For external parties...
 ### Budgeting
 
 
+## Bounded Contexts
+
+The same words may have different meanings inside each context or system.
+
+### Ledger system
+
+Records accounts and their debits and credits.
+
+Actions include
+
+- Creating accounts
+    - provided the account number / code is unique
+- Deleting accounts
+    - provided the account has a zero balance
+- Posting debits and credits to ledger(s)
+    - provided the transaction has a zero balance
+
+Really, two contexts...
+
+The chart of accounts system and the ledger system.
+
+For the chart of accounts
+
+    Account
+        code
+        name
+        description
+        balance to permit deleting the account
+        (last closed)
+
+For the ledger
+
+    Entry
+        ref
+        account code
+        date
+        value
+
+!!! tip
+
+    For the purposes of the ledger system,
+    the account number is taken as read.
+    Some other system manages account management.
+
+Ensures individual transactions balance and
+debit/crediting an account is idempotent.
+
+### Reporting system
+
+Records groups of accounts.
+
+Returns aggregate information - not concerned with debits and credits.
+
+Includes control accounts and financial statements.
+
+### Budgeting / Forecasting system
+
+...
+
 ## Context Map
 
 
