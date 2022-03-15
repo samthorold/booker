@@ -36,6 +36,7 @@ nav:
     - Domain: domain.md
     - API:
         - Core: core.md
+    - Roadmap: roadmap.md
     - Accounting:
         - Background: accounting_background.md
 
