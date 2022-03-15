@@ -24,14 +24,14 @@ This is double-entry bookkeeping.
 The `chart of accounts` sets out all a business' `account`s and the types of
 `transaction`s that go into each one.
 
-"The books" or "the accounts" are a collection of `journal`s.
+"The books" or "the accounts" are a collection of `ledger`s.
 
-A `journal` records groups of `debit`s and `credit`s. For example,
+A `ledger` records groups of `debit`s and `credit`s. For example,
 
-- Sales `journal`: customer accounts
-- Purchase `journal`: supplier accounts
-- General `journal`: ultimately, all business activities
-- Bank `journal`: bank account inflows and outflows
+- Sales `ledger`: customer accounts
+- Purchase `ledger`: supplier accounts
+- General `ledger`: ultimately, all business activities
+- Bank `ledger`: bank account inflows and outflows
 
 The information recorded in bookkeeping is ultimately used to create financial
 statements.
@@ -82,11 +82,11 @@ Chart of accounts columns;
 - Description of the types of `transaction`s to be recorded in that `account`
 
 Historically, splitting the act of entering debits and credits onto
-separate journals kept things simpler.
+separate ledgers kept things simpler.
 Debits and credits relating to sales were all recorded in one place then
-the total sales for the period was entered in the general journal.
+the total sales for the period was entered in the general ledger.
 
-`Control account reconciliations` help to check the various journals are in
+`Control account reconciliations` help to check the various ledgers are in
 agreement.
 
 For example, the debtors control account totals all the sales and customer
