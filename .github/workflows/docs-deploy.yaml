@@ -1,0 +1,37 @@
+---
+name: Deploy docs
+
+on:
+  push:
+    branches: ["main"]
+  workflow_dispatch:
+
+env:
+  FORCE_COLOR: "1"  # Make tools pretty.
+  TOX_TESTENV_PASSENV: FORCE_COLOR
+  PYTHON_LATEST: "3.10"
+
+
+jobs:
+  docs:
+    name: docs on ${{ matrix.python-version }}
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.10"]
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: "Install dependencies"
+        run: |
+          python -VV
+          python -m site
+          python -m pip install --upgrade pip setuptools wheel
+          python -m pip install --upgrade mkdocstrings[python-legacy] mkdocs-material
+      - run: "make docs-deploy"
