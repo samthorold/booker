@@ -34,4 +34,4 @@ jobs:
           python -m site
           python -m pip install --upgrade pip setuptools wheel
           python -m pip install --upgrade mkdocstrings[python-legacy] mkdocs-material
-      - run: "make docs-deploy"
+      - run: "python -m mkdocs gh-deploy"
