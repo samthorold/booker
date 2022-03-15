@@ -2,7 +2,7 @@ from datetime import date
 
 import pytest
 
-from booker.core import Account, Entry
+from ledger.core import Account, Entry
 
 
 ENTRY = Entry(ref="001", date=date(2022, 1, 1), value=100)
