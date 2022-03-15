@@ -31,4 +31,4 @@ jobs:
           python -m pip install mkdocstrings[python-legacy] mkdocs-material
           python -m pip install .
       - name: "Deploy docs"
-        run: "python -m mkdocs gh-deploy"
+        run: "python -m mkdocs gh-deploy --force"  # https://squidfunk.github.io/mkdocs-material/publishing-your-site/
