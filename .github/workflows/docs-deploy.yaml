@@ -14,24 +14,21 @@ env:
 
 jobs:
   docs:
-    name: docs on ${{ matrix.python-version }}
+    name: Deploy docs
     runs-on: ubuntu-latest
-
-    strategy:
-      fail-fast: false
-      matrix:
-        python-version: ["3.10"]
 
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-python@v2
         with:
-          python-version: ${{ matrix.python-version }}
+          python-version: ${{env.PYTHON_LATEST}}
 
       - name: "Install dependencies"
         run: |
           python -VV
           python -m site
           python -m pip install --upgrade pip setuptools wheel
-          python -m pip install --upgrade mkdocstrings[python-legacy] mkdocs-material
-      - run: "python -m mkdocs gh-deploy"
+          python -m pip install mkdocstrings[python-legacy] mkdocs-material
+          python -m pip install .
+      - name: "Deploy docs"
+        run: "python -m mkdocs gh-deploy"
