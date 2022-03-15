@@ -35,6 +35,6 @@ nav:
     - Getting Started: getting_started.md
     - Domain: domain.md
     - API:
-        - Core: core.md
+        - Domain: api/domain.md
     - Roadmap: roadmap.md
 
