@@ -1,4 +1,4 @@
 # Core
 
-::: booker.core
+::: ledger.core
 
