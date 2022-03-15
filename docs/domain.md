@@ -24,14 +24,14 @@ This is double-entry bookkeeping.
 The `chart of accounts` sets out all a business' `account`s and the types of
 `transaction`s that go into each one.
 
-"The books" or "the accounts" are a collection of `journal`s.
+"The books" or "the accounts" are a collection of `ledger`s.
 
-A `journal` records groups of `debit`s and `credit`s. For example,
+A `ledger` records groups of `debit`s and `credit`s. For example,
 
-- Sales `journal`: customer accounts
-- Purchase `journal`: supplier accounts
-- General `journal`: ultimately, all business activities
-- Bank `journal`: bank account inflows and outflows
+- Sales `ledger`: customer accounts
+- Purchase `ledger`: supplier accounts
+- General `ledger`: ultimately, all business activities
+- Bank `ledger`: bank account inflows and outflows
 
 The information recorded in bookkeeping is ultimately used to create financial
 statements.
@@ -82,11 +82,11 @@ Chart of accounts columns;
 - Description of the types of `transaction`s to be recorded in that `account`
 
 Historically, splitting the act of entering debits and credits onto
-separate journals kept things simpler.
+separate ledgers kept things simpler.
 Debits and credits relating to sales were all recorded in one place then
-the total sales for the period was entered in the general journal.
+the total sales for the period was entered in the general ledger.
 
-`Control account reconciliations` help to check the various journals are in
+`Control account reconciliations` help to check the various ledgers are in
 agreement.
 
 For example, the debtors control account totals all the sales and customer
@@ -121,6 +121,65 @@ For external parties...
 ### Budgeting
 
 
+## Bounded Contexts
+
+The same words may have different meanings inside each context or system.
+
+### Ledger system
+
+Records accounts and their debits and credits.
+
+Actions include
+
+- Creating accounts
+    - provided the account number / code is unique
+- Deleting accounts
+    - provided the account has a zero balance
+- Posting debits and credits to ledger(s)
+    - provided the transaction has a zero balance
+
+Really, two contexts...
+
+The chart of accounts system and the ledger system.
+
+For the chart of accounts
+
+    Account
+        code
+        name
+        description
+        balance to permit deleting the account
+        (last closed)
+
+For the ledger
+
+    Entry
+        ref
+        account code
+        date
+        value
+
+!!! tip
+
+    For the purposes of the ledger system,
+    the account number is taken as read.
+    Some other system manages account management.
+
+Ensures individual transactions balance and
+debit/crediting an account is idempotent.
+
+### Reporting system
+
+Records groups of accounts.
+
+Returns aggregate information - not concerned with debits and credits.
+
+Includes control accounts and financial statements.
+
+### Budgeting / Forecasting system
+
+...
+
 ## Context Map
 
 
@@ -129,17 +188,15 @@ For external parties...
 
 ```mermaid
 classDiagram
-  Account "1" --o "0..n" Entry
-  class Account{
-    +str code
-    +str name
+  Ledger "1" --o "0..n" Entry
+  class Ledger{
     +set~Entry~ entries
-    +balance() int
-    +credit(ref, date, value) Entry
-    +debit(ref, date, value) Entry
+    +post(entries) entries
+    +balance(account) int
   }
   class Entry{
     +str ref
+    +str account
     +date date
     +Int value
   }
