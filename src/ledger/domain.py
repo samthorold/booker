@@ -43,11 +43,17 @@ class Ledger:
     """Ledger.
 
     Args:
+        name: Name of the Ledger e.g. "General"
         entries: Entry objects associated with the Ledger.
 
     """
 
-    def __init__(self, entries: set[Entry] | None = None) -> None:
+    # Tempting to put get classmethods here but they go on the unit of work.
+
+    def __init__(
+        self, name: str, entries: set[Entry] | None = None, version: int = 0
+    ) -> None:
+        self.name = name
         self.entries: set[Entry] = set() if entries is None else entries
 
     def post(self, entries: set[Entry]) -> set[Entry]:
@@ -88,3 +94,19 @@ class Ledger:
         if not entries:
             raise NoSuchAccount
         return sum(e.value for e in entries)
+
+    def close_to(self, ledger: "Ledger", date: date) -> None:
+        """Zero-out all accounts with non-zero balances and post corresponding
+        entries to the given ledger.
+
+        Args:
+            ledger: Ledger to post closing entries to.
+            date: Latest date to include entries from (inclusive).
+
+        Raises:
+            ClosingError: Issue closing the ledger.
+
+        Returns:
+            None.
+
+        """

@@ -35,23 +35,23 @@ def test_entry_hashable():
 
 
 def test_init_ledger_with_no_entries():
-    Ledger()
+    Ledger("Gen")
 
 
 def test_init_ledger_with_entries():
-    l = Ledger(set([ENTRY]))
+    l = Ledger("Gen", set([ENTRY]))
     assert len(l.entries) == 1
 
 
 def test_post_balanced_entries():
-    l = Ledger()
+    l = Ledger("Gen")
     entries = create_transaction("001", (100, -100))
     es = l.post(entries)
     assert len(l.entries) == len(es)
 
 
 def test_post_unbalanced_entries():
-    l = Ledger()
+    l = Ledger("Gen")
     entries = create_transaction("001", (100, -101))
     with pytest.raises(PostingError):
         _ = l.post(entries)
@@ -59,7 +59,7 @@ def test_post_unbalanced_entries():
 
 def test_ledger_can_get_account_balance():
     entries = create_transaction("001", (100, -100))
-    l = Ledger(entries)
+    l = Ledger("Gen", entries)
     assert l.balance("001") == 100
     assert l.balance("002") == -100
     entries = create_transaction("002", (100, -100))
@@ -70,10 +70,16 @@ def test_ledger_can_get_account_balance():
 
 def test_ledger_post_idempotent():
     entries = create_transaction("001", (100, -100))
-    l = Ledger(entries)
+    l = Ledger("Gen", entries)
     assert l.balance("001") == 100
     assert l.balance("002") == -100
     entries = create_transaction("001", (100, -100))
     _ = l.post(entries)
     assert l.balance("001") == 100
     assert l.balance("002") == -100
+
+
+def test_ledger_close_to():
+    l1 = Ledger("General")
+    l2 = Ledger("Sales")
+    l2.close_to(l1, TODAY)
