@@ -5,21 +5,20 @@ import pytest
 from ledger.domain import Entry, Ledger, PostingError
 
 
-ENTRY = Entry(ref="001", account="001", date=date(2022, 1, 1), value=100)
+TODAY = date(2022, 1, 1)
 
-BALANCED_ENTRIES = set(
-    [
-        Entry(ref="001", account="001", date=date(2022, 1, 1), value=100),
-        Entry(ref="001", account="002", date=date(2022, 1, 1), value=-100),
-    ]
-)
+ENTRY = Entry(ref="001", account="001", date=TODAY, value=100)
 
-UNBALANCED_ENTRIES = set(
-    [
-        Entry(ref="001", account="001", date=date(2022, 1, 1), value=100),
-        Entry(ref="001", account="002", date=date(2022, 1, 1), value=-101),
-    ]
-)
+
+def create_transaction(ref, values, accounts=None, date=TODAY) -> set[Entry]:
+    accounts = ("001", "002") if accounts is None else accounts
+    if len(accounts) != len(values):
+        raise ValueError(
+            f"accounts {accounts} and values {values} must be the same length"
+        )
+    return set(
+        [Entry(ref, account, date, value) for account, value in zip(accounts, values)]
+    )
 
 
 def test_entry_is_immutable():
@@ -40,20 +39,41 @@ def test_init_ledger_with_no_entries():
 
 
 def test_init_ledger_with_entries():
-    l = Ledger(entries=set([ENTRY]))
+    l = Ledger(set([ENTRY]))
     assert len(l.entries) == 1
 
 
 def test_post_balanced_entries():
     l = Ledger()
-
-    es = l.post(BALANCED_ENTRIES)
-
+    entries = create_transaction("001", (100, -100))
+    es = l.post(entries)
     assert len(l.entries) == len(es)
 
 
 def test_post_unbalanced_entries():
     l = Ledger()
-
+    entries = create_transaction("001", (100, -101))
     with pytest.raises(PostingError):
-        _ = l.post(UNBALANCED_ENTRIES)
+        _ = l.post(entries)
+
+
+def test_ledger_can_get_account_balance():
+    entries = create_transaction("001", (100, -100))
+    l = Ledger(entries)
+    assert l.balance("001") == 100
+    assert l.balance("002") == -100
+    entries = create_transaction("002", (100, -100))
+    _ = l.post(entries)
+    assert l.balance("001") == 200
+    assert l.balance("002") == -200
+
+
+def test_ledger_post_idempotent():
+    entries = create_transaction("001", (100, -100))
+    l = Ledger(entries)
+    assert l.balance("001") == 100
+    assert l.balance("002") == -100
+    entries = create_transaction("001", (100, -100))
+    _ = l.post(entries)
+    assert l.balance("001") == 100
+    assert l.balance("002") == -100

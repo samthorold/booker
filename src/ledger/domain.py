@@ -20,12 +20,23 @@ class Entry:
     value: int
 
 
-class PostingError(Exception):
+class LedgerError(Exception):
+    """Ledger domain base Exception."""
+
+
+class PostingError(LedgerError):
     """PostingError base Exception."""
 
 
 class TransactionDoesNotBalance(PostingError):
     """The entries do not balance."""
+
+
+class NoSuchAccount(LedgerError):
+    """No such account code in the ledger.
+
+    As opposed to, say, an account with zero balance.
+    """
 
 
 class Ledger:
@@ -59,3 +70,21 @@ class Ledger:
         self.entries = self.entries | entries
 
         return entries
+
+    def balance(self, account: str) -> int:
+        """Get the balance for an account code.
+
+        Args:
+            account: Account code.
+
+        Raises:
+            NoSuchAccount: No corresponding account code in the ledger.
+
+        Returns:
+            Sum of the entries for the corresponding account.
+
+        """
+        entries = set(e for e in self.entries if e.account == account)
+        if not entries:
+            raise NoSuchAccount
+        return sum(e.value for e in entries)
