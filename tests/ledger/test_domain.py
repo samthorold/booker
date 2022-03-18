@@ -1,11 +1,13 @@
-from datetime import date
+from datetime import date as date_cls
 
 import pytest
 
-from ledger.domain import Entry, Ledger, PostingError
+from ledger.domain import ClosingError, Entry, Ledger, NoSuchAccount, PostingError
 
 
-TODAY = date(2022, 1, 1)
+YESTERDAY = date_cls(2021, 12, 31)
+TODAY = date_cls(2022, 1, 1)
+TOMORROW = date_cls(2022, 1, 2)
 
 ENTRY = Entry(ref="001", account="001", date=TODAY, value=100)
 
@@ -58,28 +60,87 @@ def test_post_unbalanced_entries():
 
 
 def test_ledger_can_get_account_balance():
-    entries = create_transaction("001", (100, -100))
-    l = Ledger("Gen", entries)
-    assert l.balance("001") == 100
-    assert l.balance("002") == -100
-    entries = create_transaction("002", (100, -100))
-    _ = l.post(entries)
-    assert l.balance("001") == 200
-    assert l.balance("002") == -200
+    l = Ledger("Gen", create_transaction("001", (100, -100), date=YESTERDAY))
+    assert l.balance("001", TODAY) == 100
+    assert l.balance("002", TODAY) == -100
+
+    _ = l.post(create_transaction("002", (100, -100), date=TODAY))
+    assert l.balance("001", TODAY) == 200
+    assert l.balance("002", TODAY) == -200
+
+    _ = l.post(create_transaction("003", (100, -100), date=TOMORROW))
+    assert l.balance("001", TODAY) == 200
+    assert l.balance("002", TODAY) == -200
+    assert l.balance("001", TOMORROW) == 300
+    assert l.balance("002", TOMORROW) == -300
+
+
+def test_ledger_balance_no_account():
+    with pytest.raises(NoSuchAccount):
+        Ledger("gen").balance("5", TODAY)
 
 
 def test_ledger_post_idempotent():
     entries = create_transaction("001", (100, -100))
     l = Ledger("Gen", entries)
-    assert l.balance("001") == 100
-    assert l.balance("002") == -100
+    assert l.balance("001", TODAY) == 100
+    assert l.balance("002", TODAY) == -100
     entries = create_transaction("001", (100, -100))
     _ = l.post(entries)
-    assert l.balance("001") == 100
-    assert l.balance("002") == -100
+    assert l.balance("001", TODAY) == 100
+    assert l.balance("002", TODAY) == -100
+
+
+def test_ledger_close_to_reused_reference():
+    general = Ledger("General")
+    sales = Ledger("Sales")
+    _ = sales.post(create_transaction("001", (100, -100), ("001", "002"), TODAY))
+    _ = sales.post(create_transaction("002", (-100, 100), ("001", "002"), TODAY))
+    _ = sales.post(create_transaction("003", (100, -100), ("001", "002"), TODAY))
+    with pytest.raises(ClosingError):
+        _ = sales.close_to("002", general, TODAY)
+
+    general = Ledger("General")
+    _ = general.post(create_transaction("001", (100, -100), ("001", "002"), TODAY))
+    sales = Ledger("Sales")
+    _ = sales.post(create_transaction("001", (100, -100), ("001", "002"), TODAY))
+    _ = sales.post(create_transaction("002", (-100, 100), ("001", "002"), TODAY))
+    _ = sales.post(create_transaction("003", (100, -100), ("001", "002"), TODAY))
+    with pytest.raises(ClosingError):
+        _ = sales.close_to("001", general, TODAY)
 
 
 def test_ledger_close_to():
-    l1 = Ledger("General")
-    l2 = Ledger("Sales")
-    l2.close_to(l1, TODAY)
+    general = Ledger("General")
+    sales = Ledger("Sales")
+    assert not sales.close_to("close sales", general, TODAY)
+
+    _ = sales.post(create_transaction("001", (100, -100), ("001", "002"), YESTERDAY))
+    _ = sales.post(create_transaction("002", (100, -100), ("001", "002"), TODAY))
+    _ = sales.post(create_transaction("003", (100, -100), ("003", "004"), YESTERDAY))
+    _ = sales.post(create_transaction("004", (-100, 100), ("003", "004"), TODAY))
+    _ = sales.post(create_transaction("005", (100, -100), ("001", "002"), TOMORROW))
+
+    closing_entries = sales.close_to("close sales", general, TODAY)
+
+    # only as many closing entries as accounts with non-zero balance
+    assert len(closing_entries) == 2
+    assert all(sales.balance(a, TODAY) == 0 for a in ("001", "002"))
+    assert sales.balance("001", TOMORROW) == 100
+    assert sales.balance("002", TOMORROW) == -100
+    assert general.balance("001", TODAY) == 200
+    assert general.balance("002", TODAY) == -200
+    assert general.balance("001", TOMORROW) == 200
+    assert general.balance("002", TOMORROW) == -200
+
+    closing_entries = sales.close_to("close sales", general, TODAY)
+
+    # should be noop
+    assert not closing_entries
+    assert all(sales.balance(a, TODAY) == 0 for a in ("001", "002"))
+    assert sales.balance("001", TOMORROW) == 100
+    assert sales.balance("002", TOMORROW) == -100
+    assert general.balance("001", TODAY) == 200
+    assert general.balance("002", TODAY) == -200
+    assert general.balance("001", TOMORROW) == 200
+    assert general.balance("002", TOMORROW) == -200
