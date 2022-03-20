@@ -1,5 +1,6 @@
-from dataclasses import dataclass
+from dataclasses import asdict, dataclass
 from datetime import date as date_cls  # date a common name
+from typing import Optional
 
 
 @dataclass(frozen=True)
@@ -18,6 +19,16 @@ class Entry:
     account: str
     date: date_cls
     value: int
+
+    @classmethod
+    def from_dict(cls, dikt: dict) -> "Entry":
+        dikt["date"] = date_cls(*dikt["date"])
+        return Entry(**dikt)
+
+    def to_dict(self):
+        dikt = asdict(self)
+        dikt["date"] = (dikt["date"].year, dikt["date"].month, dikt["date"].day)
+        return dikt
 
 
 class LedgerError(Exception):
@@ -55,7 +66,7 @@ class Ledger:
     # Tempting to put get classmethods here but they go on the unit of work.
 
     def __init__(
-        self, name: str, entries: set[Entry] | None = None, version: int = 0
+        self, name: str, entries: Optional[set[Entry]] = None, version: int = 0
     ) -> None:
         self.name = name
         self.entries: set[Entry] = set() if entries is None else entries
