@@ -15,6 +15,7 @@ source = ["src", ".tox/*/site-packages"]
 
 [tool.coverage.report]
 show_missing = true
+skip_covered = true
 exclude_lines = [
     "pragma: no cover",
 ]
