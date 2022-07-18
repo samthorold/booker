@@ -4,10 +4,6 @@ from ledger import domain
 from ledger import uow as unit_of_work
 
 
-class InvalidSku(Exception):
-    pass
-
-
 def add_ledger(name: str, uow: unit_of_work.UnitOfWork):
     with uow:
         uow.ledgers.add(domain.Ledger(name))
