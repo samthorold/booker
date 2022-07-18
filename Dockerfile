@@ -13,7 +13,7 @@ WORKDIR /work
 COPY src/ src/
 COPY setup.cfg .
 COPY pyproject.toml .
-RUN pip install -e .
+RUN pip install -e .[dev]
 COPY tests/ /tests/
 
 

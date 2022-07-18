@@ -33,8 +33,8 @@ fmt:
 fmt-watch:
 	find src tests -name "*.py" | entr venv/bin/python -m black src
 
-test:
-	venv/bin/python -m pytest
+test: up
+	docker-compose run --rm --no-deps --entrypoint=pytest app /tests
 
 test-watch:
 	find src tests -name "*.py" | entr venv/bin/python -m pytest -v

@@ -1,15 +1,15 @@
-from sqlalchemy import Table, MetaData, Column, Integer, String, Date, ForeignKey
-from sqlalchemy.orm import mapper, relationship
+from sqlalchemy import Table, Column, Integer, String, Date, ForeignKey
+from sqlalchemy.orm import relationship, registry
 
 from ledger import domain
 
 
-metadata = MetaData()
+mapper_registry = registry()
 
 
 ledgers = Table(
     "ledgers",
-    metadata,
+    mapper_registry.metadata,
     Column("id", Integer, primary_key=True, autoincrement=True),
     Column("name", String(255), unique=True, nullable=False),
 )
@@ -17,7 +17,7 @@ ledgers = Table(
 
 entries = Table(
     "entries",
-    metadata,
+    mapper_registry.metadata,
     Column("ref", String(255), primary_key=True),
     Column("account", String(255), primary_key=True),
     Column("date", Date, primary_key=True),
@@ -27,13 +27,14 @@ entries = Table(
 
 
 def start_mappers():
-    entries_mapper = mapper(domain.Entry, entries)
-    return mapper(
+    entries_mapper = mapper_registry.map_imperatively(domain.Entry, entries)
+    mapper_registry.map_imperatively(
         domain.Ledger,
         ledgers,
         properties={
             "entries": relationship(
                 entries_mapper,
+                backref="ledger",
                 collection_class=set,
             )
         },
