@@ -22,14 +22,14 @@ class Entry:
     value: int
 
     @classmethod
-    def from_dict(cls, dikt: dict) -> "Entry":
-        dikt["date"] = date_cls(*dikt["date"])
-        return Entry(**dikt)
+    def from_dict(cls, d: dict) -> "Entry":
+        d["date"] = date_cls(*d["date"])
+        return Entry(**d)
 
     def to_dict(self):
-        dikt = asdict(self)
-        dikt["date"] = (dikt["date"].year, dikt["date"].month, dikt["date"].day)
-        return dikt
+        d = asdict(self)
+        d["date"] = (d["date"].year, d["date"].month, d["date"].day)
+        return d
 
 
 class LedgerError(Exception):
@@ -58,9 +58,13 @@ class TransactionDoesNotBalance(PostingError):
 class Ledger:
     """Ledger.
 
+    The version attribute is to prevent multiple processes writing to the same
+    ledger simultaneously.
+
     Args:
         name: Name of the Ledger e.g. "General"
         entries: Entry objects associated with the Ledger.
+        version: Helps to prevent concurrent writes.
 
     """
 
@@ -71,6 +75,7 @@ class Ledger:
     ) -> None:
         self.name = name
         self.entries: set[Entry] = set() if entries is None else entries
+        self.version = version
 
     def post(self, entries: set[Entry]) -> set[Entry]:
         """Post entries to the ledger.

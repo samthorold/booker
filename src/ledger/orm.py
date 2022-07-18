@@ -12,6 +12,7 @@ ledgers = Table(
     mapper_registry.metadata,
     Column("id", Integer, primary_key=True, autoincrement=True),
     Column("name", String(255), unique=True, nullable=False),
+    Column("version", Integer, nullable=False, server_default="0"),
 )
 
 

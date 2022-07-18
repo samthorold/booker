@@ -23,8 +23,12 @@ class UnitOfWork(Protocol):
         ...
 
 
-DEFAULT_SESSION_FACTORY = sessionmaker(bind=create_engine(config.get_postgres_uri()))
-
+DEFAULT_SESSION_FACTORY = sessionmaker(
+    bind=create_engine(
+        config.get_postgres_uri(),
+        isolation_level="REPEATABLE READ",
+    )
+)
 
 class SqlAlchemyUnitOfWork:
     def __init__(self, session_factory=DEFAULT_SESSION_FACTORY):
