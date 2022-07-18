@@ -3,7 +3,8 @@ from datetime import date as date_cls  # date a common name
 from typing import Optional
 
 
-@dataclass(frozen=True)
+# https://github.com/cosmicpython/code/issues/17
+@dataclass(unsafe_hash=True)
 class Entry:
     """Ledger entry.
 
