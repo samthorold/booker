@@ -23,7 +23,8 @@ def create_transaction(ref, values, accounts=None, date=TODAY) -> set[Entry]:
     )
 
 
-def test_entry_is_immutable():
+# https://github.com/cosmicpython/code/issues/17
+def do_not_test_entry_is_immutable():
     # dataclasses.FrozonInstanceError is subclass of AttributeError
     with pytest.raises(AttributeError):
         ENTRY.ref = "002"
