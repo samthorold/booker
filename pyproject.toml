@@ -19,4 +19,5 @@ show_missing = true
 skip_covered = true
 exclude_lines = [
     "pragma: no cover",
+    "class .*\\bProtocol\\):"
 ]
