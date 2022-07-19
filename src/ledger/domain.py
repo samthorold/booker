@@ -1,6 +1,7 @@
+from __future__ import annotations
 from dataclasses import asdict, dataclass
 from datetime import date as date_cls  # date a common name
-from typing import Optional
+from typing import Optional, Any
 
 
 # https://github.com/cosmicpython/code/issues/17
@@ -22,13 +23,17 @@ class Entry:
     value: int
 
     @classmethod
-    def from_dict(cls, d: dict) -> "Entry":
-        d["date"] = date_cls(*d["date"])
-        return Entry(**d)
+    def from_dict(cls, d: dict[str, str | int]) -> Entry:
+        kwargs = dict(d)
+        kwargs["date"] = date_cls.fromisoformat(d["date"])
+        return Entry(**kwargs)
 
-    def to_dict(self):
+    def __repr__(self):
+        return f"<Entry({self.ref}, {self.account}, {self.date}, {self.value})>"
+
+    def to_dict(self) -> dict[str, Any]:
         d = asdict(self)
-        d["date"] = (d["date"].year, d["date"].month, d["date"].day)
+        d["date"] = d["date"].isoformat()
         return d
 
 
@@ -76,6 +81,9 @@ class Ledger:
         self.name = name
         self.entries: set[Entry] = set() if entries is None else entries
         self.version = version
+
+    def __repr__(self):
+        return f"<Ledger({self.name})>"
 
     def post(self, entries: set[Entry]) -> set[Entry]:
         """Post entries to the ledger.

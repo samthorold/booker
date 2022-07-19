@@ -1,3 +1,4 @@
+from __future__ import annotations
 from typing import Protocol
 
 from sqlalchemy import create_engine
@@ -10,11 +11,11 @@ from ledger import config, repository
 class UnitOfWork(Protocol):
     ledgers: repository.Repository
 
-    def __enter__(self) -> "UnitOfWork":
-        return self
+    def __enter__(self) -> UnitOfWork:
+        ...
 
     def __exit__(self, *args):
-        self.rollback()
+        ...
 
     def commit(self):
         ...
@@ -30,17 +31,18 @@ DEFAULT_SESSION_FACTORY = sessionmaker(
     )
 )
 
+
 class SqlAlchemyUnitOfWork:
     def __init__(self, session_factory=DEFAULT_SESSION_FACTORY):
         self.session_factory = session_factory
 
     def __enter__(self):
-        self.session = self.session_factory()  # type: Session
+        self.session: Session = self.session_factory()
         self.ledgers = repository.SQLAlchemyRepository(self.session)
         return self
 
     def __exit__(self, *args):
-        self.session.rollback()
+        self.rollback()
         self.session.close()
 
     def commit(self):

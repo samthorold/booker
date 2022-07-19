@@ -22,6 +22,7 @@ __pycache__/
 # editors
 *.swp
 .vscode/
+.idea
 
 # OS
 .DS_Store

@@ -4,7 +4,7 @@ from ledger.domain import Ledger
 
 
 class Repository(Protocol):
-    def add(self, ledger: Ledger) -> None:
+    def add(self, ledger: Ledger) -> Ledger:
         ...
 
     def get(self, name: str) -> Ledger:
@@ -22,7 +22,7 @@ class SQLAlchemyRepository:
         self.session.add(ledger)
 
     def get(self, name: str) -> Ledger:
-        return self.session.query(Ledger).filter_by(name=name).first()
+        return self.session.query(Ledger).filter_by(name=name).one()
 
     def list(self) -> Iterable[Ledger]:
         return self.session.query(Ledger).all()
