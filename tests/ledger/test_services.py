@@ -8,7 +8,7 @@ def test_add_and_list_ledgers(session_factory):
     with uow:
         _ = services.add_ledger(name, uow=uow)
         uow.commit()
-    
+
     uow = SqlAlchemyUnitOfWork(session_factory)
     with uow:
         ledgers = services.ledgers(uow=uow)

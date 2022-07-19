@@ -57,8 +57,7 @@ def close(
         parent_ledger = uow.ledgers.get(parent)
         date_ = date_cls.fromisoformat(date)
         posted_entries = tuple(
-            e.to_dict() for e in
-            child_ledger.close_to(ref, parent_ledger, date_)
+            e.to_dict() for e in child_ledger.close_to(ref, parent_ledger, date_)
         )
         uow.commit()
     return posted_entries

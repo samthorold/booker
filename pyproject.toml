@@ -19,5 +19,7 @@ show_missing = true
 skip_covered = true
 exclude_lines = [
     "pragma: no cover",
-    "class .*\\bProtocol\\):"
+    "class .*\\bProtocol\\):",
+    "def __repr__",
+    "def __str__"
 ]

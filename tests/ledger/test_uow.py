@@ -8,8 +8,7 @@ from ledger.uow import SqlAlchemyUnitOfWork
 
 def insert_ledger_and_entries(session, name, ref, date, accounts, values):
     session.execute(
-        "INSERT INTO ledgers (name, version)"
-        " VALUES (:name, :version)",
+        "INSERT INTO ledgers (name, version)" " VALUES (:name, :version)",
         dict(name=name, version=1),
     )
     for account, value in zip(accounts, values):
