@@ -10,6 +10,7 @@ testpaths = "tests"
 parallel = true
 branch = true
 source = ["ledger",]
+omit = ["src/ledger/api.py",]
 
 [tool.coverage.paths]
 source = ["src", ".tox/*/site-packages"]

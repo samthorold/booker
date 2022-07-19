@@ -5,7 +5,7 @@ from ledger import domain
 from ledger import uow as unit_of_work
 
 
-def add_ledger(name: str, uow: unit_of_work.UnitOfWork):
+def add_ledger(name: str, uow: unit_of_work.UnitOfWork) -> str:
     with uow:
         ledger = domain.Ledger(name=name)
         uow.ledgers.add(ledger)
