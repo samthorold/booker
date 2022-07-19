@@ -1,4 +1,4 @@
-FROM python:3.9-slim-buster
+FROM python:3.10-slim-buster
 
 # can use psycopg2-binary but seems to be funny business with
 # 3.10 and/or M1
