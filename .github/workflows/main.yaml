@@ -28,9 +28,12 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
 
-      - name: "Build containers and run tests"
-        run: "make down && make img-build && make test"
-
+      - name: "Install dependencies"
+        run: |
+          python -VV
+          python -m site
+          python -m pip install --upgrade pip setuptools wheel
+          python -m pip install --upgrade virtualenv tox tox-gh-actions
       - run: "pwd"
       - run: "python -m tox"
       - run: "ls -la"
