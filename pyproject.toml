@@ -4,17 +4,26 @@ build-backend = "setuptools.build_meta"
 
 [tool.pytest.ini_options]
 addopts = "--doctest-modules"
+testpaths = "tests"
+markers = [
+    "postgres: Uses Postgres and currently does not work in GHA"
+]
 
 [tool.coverage.run]
 parallel = true
 branch = true
 source = ["ledger",]
+omit = ["**/ledger/api.py", "**/ledger/config.py"]
 
 [tool.coverage.paths]
 source = ["src", ".tox/*/site-packages"]
 
 [tool.coverage.report]
 show_missing = true
+skip_covered = true
 exclude_lines = [
     "pragma: no cover",
+    "class .*\\bProtocol\\):",
+    "def __repr__",
+    "def __str__"
 ]

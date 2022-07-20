@@ -1,3 +1,20 @@
+export COMPOSE_DOCKER_CLI_BUILD=1
+export DOCKER_BUILDKIT=1
+
+all: down img-build up
+
+img-build:
+	docker-compose build
+
+up:
+	docker-compose up -d app
+
+down:
+	docker-compose down --remove-orphans
+
+logs:
+	docker-compose logs app | tail -100
+
 docs-serve:
 	venv/bin/python -m mkdocs serve
 
@@ -16,8 +33,8 @@ fmt:
 fmt-watch:
 	find src tests -name "*.py" | entr venv/bin/python -m black src
 
-test:
-	venv/bin/python -m pytest
+test: up
+	docker-compose run --rm --no-deps app sh -c "coverage run -m pytest /tests && coverage combine && coverage report -m"
 
 test-watch:
 	find src tests -name "*.py" | entr venv/bin/python -m pytest -v

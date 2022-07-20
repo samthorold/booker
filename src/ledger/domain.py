@@ -1,8 +1,11 @@
-from dataclasses import dataclass
+from __future__ import annotations
+from dataclasses import asdict, dataclass
 from datetime import date as date_cls  # date a common name
+from typing import Optional, Any
 
 
-@dataclass(frozen=True)
+# https://github.com/cosmicpython/code/issues/17
+@dataclass(unsafe_hash=True)
 class Entry:
     """Ledger entry.
 
@@ -18,6 +21,20 @@ class Entry:
     account: str
     date: date_cls
     value: int
+
+    @classmethod
+    def from_dict(cls, d: dict[str, str | int]) -> Entry:
+        kwargs = dict(d)
+        kwargs["date"] = date_cls.fromisoformat(d["date"])
+        return Entry(**kwargs)
+
+    def __repr__(self):
+        return f"<Entry({self.ref}, {self.account}, {self.date}, {self.value})>"
+
+    def to_dict(self) -> dict[str, Any]:
+        d = asdict(self)
+        d["date"] = d["date"].isoformat()
+        return d
 
 
 class LedgerError(Exception):
@@ -46,19 +63,27 @@ class TransactionDoesNotBalance(PostingError):
 class Ledger:
     """Ledger.
 
+    The version attribute is to prevent multiple processes writing to the same
+    ledger simultaneously.
+
     Args:
         name: Name of the Ledger e.g. "General"
         entries: Entry objects associated with the Ledger.
+        version: Helps to prevent concurrent writes.
 
     """
 
     # Tempting to put get classmethods here but they go on the unit of work.
 
     def __init__(
-        self, name: str, entries: set[Entry] | None = None, version: int = 0
+        self, name: str, entries: Optional[set[Entry]] = None, version: int = 0
     ) -> None:
         self.name = name
         self.entries: set[Entry] = set() if entries is None else entries
+        self.version = version
+
+    def __repr__(self):
+        return f"<Ledger({self.name})>"
 
     def post(self, entries: set[Entry]) -> set[Entry]:
         """Post entries to the ledger.
