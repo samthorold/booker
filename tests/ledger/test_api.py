@@ -4,6 +4,7 @@ import requests
 from ledger import config
 
 
+@pytest.mark.postgres
 @pytest.mark.usefixtures("postgres_db")
 @pytest.mark.usefixtures("restart_api")
 def test_create_ledger():

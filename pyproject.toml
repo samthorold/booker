@@ -5,6 +5,9 @@ build-backend = "setuptools.build_meta"
 [tool.pytest.ini_options]
 addopts = "--doctest-modules"
 testpaths = "tests"
+markers = [
+    "postgres: Uses Postgres and currently does not work in GHA"
+]
 
 [tool.coverage.run]
 parallel = true
