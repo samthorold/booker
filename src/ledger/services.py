@@ -26,7 +26,6 @@ def post(
 ) -> dict[str, str | list[dict[str, Any]]]:
     with uow:
         ledger = uow.ledgers.get(name)
-        ledger.method()
         entry_objs = set(domain.Entry.from_dict(entry) for entry in entries)
         posted_entries = [e.to_dict() for e in ledger.post(entry_objs)]
         uow.commit()
