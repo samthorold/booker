@@ -14,14 +14,17 @@ def ledger():
         assert request.json
         data = request.json
         name = data.pop("name")
-        return (
-            services.add_ledger(
-                uow=uow.SqlAlchemyUnitOfWork(),
-                name=name,
-                **data,
-            ),
-            201,
-        )
+        try:
+            return (
+                services.add_ledger(
+                    uow=uow.SqlAlchemyUnitOfWork(),
+                    name=name,
+                    **data,
+                ),
+                201,
+            )
+        except domain.LedgerError as e:
+            return {"message": str(e)}, 400
     return services.ledgers(uow=uow.SqlAlchemyUnitOfWork())
 
 
@@ -39,6 +42,25 @@ def post():
                 uow=uow.SqlAlchemyUnitOfWork(),
             ),
             201,
+        )
+    except domain.LedgerError as e:
+        return {"message": str(e)}, 400
+
+
+@app.route("/balance", methods=["GET"])
+def balance():
+    assert request.json
+    data = request.json
+
+    name = data.pop("name")
+    account = data.pop("account")
+    date = data.pop("date")
+    try:
+        return services.balance(
+            name=name,
+            account=account,
+            date=date,
+            uow=uow.SqlAlchemyUnitOfWork(),
         )
     except domain.LedgerError as e:
         return {"message": str(e)}, 400
