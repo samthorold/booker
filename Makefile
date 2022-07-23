@@ -34,7 +34,7 @@ fmt-watch:
 	find src tests -name "*.py" | entr venv/bin/python -m black src
 
 test: up
-	docker-compose run --rm --no-deps app sh -c "coverage run -m pytest /tests"
+	docker-compose run --rm --no-deps app sh -c "coverage run -m pytest /tests && coverage combine && coverage html --directory=/artefacts/htmlcov && coverage report -m --fail-under 100"
 
 build-test: img-build up test
 

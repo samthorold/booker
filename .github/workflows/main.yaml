@@ -28,12 +28,13 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
 
-      - name: "Install dependencies"
-        run: |
-          python -VV
-          python -m site
-          python -m pip install --upgrade pip setuptools wheel
-          python -m pip install --upgrade virtualenv tox tox-gh-actions
+      # - name: "Install dependencies"
+      #   run: |
+      #     python -VV
+      #     python -m site
+      #     python -m pip install --upgrade pip setuptools wheel
+      #     python -m pip install --upgrade virtualenv tox tox-gh-actions
+      - run: "mkdir artefacts"
       - run: "pwd"
       - run: "make build-test"
       - run: "ls -la"
@@ -42,7 +43,7 @@ jobs:
         uses: "actions/upload-artifact@v2"
         with:
           name: coverage-data
-          path: ".coverage.*"
+          path: "./artefacts/htmlcov"
           if-no-files-found: ignore
 
 
@@ -66,11 +67,6 @@ jobs:
 
       - run: "ls -la"
 
-      - name: Coverage report and fail if it's <100%.
-        run: |
-          python -m coverage combine
-          python -m coverage html --skip-covered --skip-empty
-          python -m coverage report --fail-under=100
       - name: Upload HTML report if check failed.
         uses: actions/upload-artifact@v2
         with:
