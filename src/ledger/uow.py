@@ -38,7 +38,9 @@ class SqlAlchemyUnitOfWork:
 
     def __enter__(self):
         self.session: Session = self.session_factory()
-        self.ledgers = repository.SQLAlchemyRepository(self.session)
+        self.ledgers: repository.Repository = repository.SQLAlchemyRepository(
+            self.session
+        )
         return self
 
     def __exit__(self, *args):

@@ -8,7 +8,7 @@ from ledger.domain import Ledger
 class Repository(Protocol):
     session: Session
 
-    def add(self, ledger: Ledger) -> Ledger:
+    def add(self, ledger: Ledger) -> None:
         ...
 
     def get(self, name: str) -> Ledger:

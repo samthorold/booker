@@ -28,12 +28,6 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
 
-      # - name: "Install dependencies"
-      #   run: |
-      #     python -VV
-      #     python -m site
-      #     python -m pip install --upgrade pip setuptools wheel
-      #     python -m pip install --upgrade virtualenv tox tox-gh-actions
       - run: "mkdir artefacts"
       - run: "pwd"
       - run: "make build-test"
@@ -79,3 +73,16 @@ jobs:
           name: html-report
           path: htmlcov
         if: ${{ failure() }}
+
+  typing:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v2
+        with:
+          # Use latest Python, so it understands all syntax.
+          python-version: ${{env.PYTHON_LATEST}}
+      - run: python -m pip install --upgrade .[dev]
+      - run: "ls -la"
+      - run: "make type"

@@ -69,7 +69,7 @@ def test_get_ledger_and_entries(session_factory):
         assert len(sales_ledger.entries) == 2, sales_ledger.entries
 
         all_sales_ledgers = uow.ledgers.list()
-        assert len(all_sales_ledgers) == 1
+        assert len(list(all_sales_ledgers)) == 1
 
 
 def test_account_balance(session_factory):
