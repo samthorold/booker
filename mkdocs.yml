@@ -1,5 +1,9 @@
 site_name: booker
 
+watch:
+    - src
+    - tests
+
 theme:
     name: material
     icon:
@@ -18,8 +22,8 @@ theme:
             quote: octicons/quote-16
 
 plugins:
-    - search
-    - mkdocstrings
+  - search
+  - mkdocstrings
 
 markdown_extensions:
     - admonition

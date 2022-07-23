@@ -1,9 +1,13 @@
 from typing import Iterable, Protocol
 
+from sqlalchemy.orm.session import Session
+
 from ledger.domain import Ledger
 
 
 class Repository(Protocol):
+    session: Session
+
     def add(self, ledger: Ledger) -> Ledger:
         ...
 
@@ -15,7 +19,7 @@ class Repository(Protocol):
 
 
 class SQLAlchemyRepository:
-    def __init__(self, session):
+    def __init__(self, session: Session):
         self.session = session
 
     def add(self, ledger: Ledger) -> None:

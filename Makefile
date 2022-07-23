@@ -3,7 +3,7 @@ export DOCKER_BUILDKIT=1
 
 all: down img-build up
 
-img-build:
+img-build: down
 	docker-compose build
 
 up:
@@ -22,7 +22,7 @@ docs-build:
 	venv/bin/python -m mkdocs build
 
 docs-watch:
-	find src tests -name "*.py" | entr -r venv/bin/python -m mkdocs serve
+	venv/bin/python -m mkdocs serve
 
 docs-deploy:
 	venv/bin/python -m mkdocs gh-deploy
@@ -35,6 +35,8 @@ fmt-watch:
 
 test: up
 	docker-compose run --rm --no-deps app sh -c "coverage run -m pytest /tests && coverage combine && coverage report -m"
+
+build-test: img-build up test
 
 test-watch:
 	find src tests -name "*.py" | entr venv/bin/python -m pytest -v
