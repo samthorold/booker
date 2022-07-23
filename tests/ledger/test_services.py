@@ -1,3 +1,5 @@
+import pytest
+
 from ledger import services
 from ledger.uow import SqlAlchemyUnitOfWork
 
@@ -8,6 +10,26 @@ def test_add_and_list_ledgers(session_factory):
     with uow:
         _ = services.add_ledger(name, uow=uow)
         uow.commit()
+
+    uow = SqlAlchemyUnitOfWork(session_factory)
+    with uow:
+        ledgers = services.ledgers(uow=uow)
+        assert name in ledgers["ledgers"]
+
+
+def test_cannot_add_duplicate_ledgers(session_factory):
+    name = "sales"
+    uow = SqlAlchemyUnitOfWork(session_factory)
+    with uow:
+        _ = services.add_ledger(name, uow=uow)
+        uow.commit()
+
+    uow = SqlAlchemyUnitOfWork(session_factory)
+
+    with pytest.raises(services.DuplicateLedger):
+        with uow:
+            _ = services.add_ledger(name, uow=uow)
+            uow.commit()
 
     uow = SqlAlchemyUnitOfWork(session_factory)
     with uow:

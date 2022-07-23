@@ -14,14 +14,17 @@ def ledger():
         assert request.json
         data = request.json
         name = data.pop("name")
-        return (
-            services.add_ledger(
-                uow=uow.SqlAlchemyUnitOfWork(),
-                name=name,
-                **data,
-            ),
-            201,
-        )
+        try:
+            return (
+                services.add_ledger(
+                    uow=uow.SqlAlchemyUnitOfWork(),
+                    name=name,
+                    **data,
+                ),
+                201,
+            )
+        except domain.LedgerError as e:
+            return {"message": str(e)}, 400
     return services.ledgers(uow=uow.SqlAlchemyUnitOfWork())
 
 

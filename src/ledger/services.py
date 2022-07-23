@@ -1,15 +1,24 @@
 from datetime import date as date_cls
 from typing import Any
 
+from sqlalchemy.exc import IntegrityError
+
 from ledger import domain
 from ledger import uow as unit_of_work
+
+
+class DuplicateLedger(domain.LedgerError):
+    """Ledger names must be unique."""
 
 
 def add_ledger(name: str, uow: unit_of_work.UnitOfWork) -> dict[str, str]:
     with uow:
         ledger = domain.Ledger(name=name)
         uow.ledgers.add(ledger)
-        uow.commit()
+        try:
+            uow.commit()
+        except IntegrityError:
+            raise DuplicateLedger(f"Ledger '{name}' already exists.")
     return {"name": name}
 
 
