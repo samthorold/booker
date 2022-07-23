@@ -24,9 +24,16 @@ class Entry:
 
     @classmethod
     def from_dict(cls, d: dict[str, str | int]) -> Entry:
-        kwargs = dict(d)
-        kwargs["date"] = date_cls.fromisoformat(d["date"])
-        return Entry(**kwargs)
+        ref = str(d["ref"])
+        account = str(d["account"])
+        date = date_cls.fromisoformat(str(d["date"]))
+        value = int(d["value"])
+        return Entry(
+            ref=ref,
+            account=account,
+            date=date,
+            value=value,
+        )
 
     def __repr__(self):
         return f"<Entry({self.ref}, {self.account}, {self.date}, {self.value})>"

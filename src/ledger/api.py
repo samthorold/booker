@@ -22,7 +22,7 @@ def ledger():
             ),
             201,
         )
-    return services.ledgers(uow.SqlAlchemyUnitOfWork())
+    return services.ledgers(uow=uow.SqlAlchemyUnitOfWork())
 
 
 @app.route("/post", methods=["POST"])
