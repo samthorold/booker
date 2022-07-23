@@ -133,10 +133,13 @@ class Ledger:
             e for e in self.entries if e.account == account and e.date <= date
         )
         if not entries:
-            raise NoSuchAccount
+            raise NoSuchAccount(
+                f"No entries for account '{account}'"
+                f"prior to {date.strftime('%Y-%m-%d')}"
+            )
         return sum(e.value for e in entries)
 
-    def close_to(self, ref: str, ledger: "Ledger", date: date_cls) -> set[Entry]:
+    def close_to(self, ref: str, ledger: Ledger, date: date_cls) -> set[Entry]:
         """Zero-out all accounts with non-zero balances and post corresponding
         entries to the given ledger.
 

@@ -34,7 +34,7 @@ fmt-watch:
 	find src tests -name "*.py" | entr venv/bin/python -m black src
 
 test: up
-	docker-compose run --rm --no-deps app sh -c "coverage run -m pytest /tests && cp .coverage.* /artefacts && ls -la"
+	docker-compose run --rm --no-deps app sh -c "coverage run -m pytest -vvs /tests && cp .coverage.* /artefacts && ls -la"
 
 build-test: img-build up clean-artefacts test
 
