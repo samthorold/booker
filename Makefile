@@ -54,4 +54,4 @@ clean-artefacts:
 	rm -f artefacts/.coverage.*
 	rm -f artefacts/.DS_Store
 
-btc: build-test coverage
+btc: build-test coverage type
