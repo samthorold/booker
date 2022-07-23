@@ -98,13 +98,14 @@ def test_close(session_factory):
 
     uow = SqlAlchemyUnitOfWork(session_factory)
     with uow:
-        services.close(
+        close = services.close(
             ref="close",
             child="sales",
             parent="general",
             date="2022-01-31",
             uow=uow,
         )
+    assert len(close["posted_entries"]) == 2, close
 
     uow = SqlAlchemyUnitOfWork(session_factory)
     with uow:

@@ -9,6 +9,8 @@ from ledger import config, repository
 
 
 class UnitOfWork(Protocol):
+    """Unit of Work protocol."""
+
     ledgers: repository.Repository
 
     def __enter__(self) -> UnitOfWork:
@@ -33,6 +35,8 @@ DEFAULT_SESSION_FACTORY = sessionmaker(
 
 
 class SqlAlchemyUnitOfWork:
+    """SQLAlchemy Unit of Work."""
+
     def __init__(self, session_factory=DEFAULT_SESSION_FACTORY):
         self.session_factory = session_factory
 

@@ -12,6 +12,19 @@ class DuplicateLedger(domain.LedgerError):
 
 
 def add_ledger(name: str, uow: unit_of_work.UnitOfWork) -> dict[str, str]:
+    """Create a Ledger.
+
+    Args:
+        name: Name of the Ledger. Must be unique.
+        uow: UnitOfWork object.
+
+    Raises:
+        DuplicateLedger
+
+    Returns:
+        dict: `{"name": <name of the Ledger>}`
+
+    """
     with uow:
         ledger = domain.Ledger(name=name)
         uow.ledgers.add(ledger)

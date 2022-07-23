@@ -6,6 +6,8 @@ from ledger.domain import Ledger
 
 
 class Repository(Protocol):
+    """Repository protocol"""
+
     session: Session
 
     def add(self, ledger: Ledger) -> None:
@@ -19,6 +21,8 @@ class Repository(Protocol):
 
 
 class SQLAlchemyRepository:
+    """SQLAlchemyRepository"""
+
     def __init__(self, session: Session):
         self.session = session
 

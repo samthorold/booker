@@ -40,5 +40,8 @@ nav:
     - Domain: domain.md
     - API:
         - Domain: api/domain.md
+        - Repository: api/repository.md
+        - Unit of Work: api/uow.md
+        - Services: api/services.md
     - Roadmap: roadmap.md
 
