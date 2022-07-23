@@ -172,7 +172,3 @@ class Ledger:
             raise ClosingError(f"Is the reference, {ref}, correct?")
 
         return posted_closing_entries
-
-
-def f():
-    return 4
