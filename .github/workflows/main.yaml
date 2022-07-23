@@ -43,7 +43,7 @@ jobs:
         uses: "actions/upload-artifact@v2"
         with:
           name: coverage-data
-          path: "./artefacts/htmlcov"
+          path: "./artefacts/.coverage.*"
           if-no-files-found: ignore
 
 
@@ -66,6 +66,12 @@ jobs:
           name: coverage-data
 
       - run: "ls -la"
+
+      - name: Coverage report and fail if it's <100%.
+        run: |
+          python -m coverage combine
+          python -m coverage html --skip-covered --skip-empty
+          python -m coverage report --fail-under=100
 
       - name: Upload HTML report if check failed.
         uses: actions/upload-artifact@v2

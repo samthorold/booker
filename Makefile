@@ -34,12 +34,9 @@ fmt-watch:
 	find src tests -name "*.py" | entr venv/bin/python -m black src
 
 test: up
-	docker-compose run --rm --no-deps app sh -c "coverage run -m pytest /tests && coverage combine && coverage html --directory=/artefacts/htmlcov && coverage report -m --fail-under 100"
+	docker-compose run --rm --no-deps app sh -c "coverage run -m pytest /tests && cp .coverage.* /artefacts && ls -la"
 
 build-test: img-build up test
-
-coverage:
-	docker-compose run --rm --no-deps app sh -c "coverage combine && coverage report -m"
 
 test-watch:
 	find src tests -name "*.py" | entr venv/bin/python -m pytest -v
@@ -50,3 +47,5 @@ type:
 type-watch:
 	find src tests -name "*.py" | entr venv/bin/python -m mypy src
 
+old:
+	coverage combine && coverage html --directory=/artefacts/htmlcov && coverage report -m --fail-under 100
