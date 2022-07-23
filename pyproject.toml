@@ -6,6 +6,7 @@ build-backend = "setuptools.build_meta"
 minversion = "6.0"
 addopts = "-vv"
 testpaths = "tests"
+markers = ["e2e"]
 
 [tool.coverage.run]
 parallel = true

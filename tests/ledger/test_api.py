@@ -4,6 +4,7 @@ import requests
 from ledger import config
 
 
+@pytest.mark.e2e
 @pytest.mark.usefixtures("postgres_db")
 @pytest.mark.usefixtures("restart_api")
 def test_create_ledger_and_get_list():
@@ -22,6 +23,7 @@ def test_create_ledger_and_get_list():
     assert name in r.json()["ledgers"]
 
 
+@pytest.mark.e2e
 @pytest.mark.usefixtures("postgres_db")
 @pytest.mark.usefixtures("restart_api")
 def test_create_multiple_ledgers():
