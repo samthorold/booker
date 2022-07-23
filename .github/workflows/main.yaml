@@ -85,4 +85,4 @@ jobs:
           python-version: ${{env.PYTHON_LATEST}}
       - run: python -m pip install --upgrade .[dev]
       - run: "ls -la"
-      - run: "make type"
+      - run: "mypy src/ tests/"
