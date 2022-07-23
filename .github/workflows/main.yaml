@@ -14,7 +14,7 @@ env:
 
 jobs:
   tests:
-    name: tox on ${{ matrix.python-version }}
+    name: test on ${{ matrix.python-version }}
     runs-on: ubuntu-latest
 
     strategy:
@@ -28,21 +28,22 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
 
-      - name: "Install dependencies"
-        run: |
-          python -VV
-          python -m site
-          python -m pip install --upgrade pip setuptools wheel
-          python -m pip install --upgrade virtualenv tox tox-gh-actions
+      # - name: "Install dependencies"
+      #   run: |
+      #     python -VV
+      #     python -m site
+      #     python -m pip install --upgrade pip setuptools wheel
+      #     python -m pip install --upgrade virtualenv tox tox-gh-actions
+      - run: "mkdir artefacts"
       - run: "pwd"
-      - run: "python -m tox"
+      - run: "make build-test"
       - run: "ls -la"
 
       - name: "Upload coverage data"
         uses: "actions/upload-artifact@v2"
         with:
           name: coverage-data
-          path: ".coverage.*"
+          path: "./artefacts/.coverage.*"
           if-no-files-found: ignore
 
 
@@ -71,27 +72,10 @@ jobs:
           python -m coverage combine
           python -m coverage html --skip-covered --skip-empty
           python -m coverage report --fail-under=100
+
       - name: Upload HTML report if check failed.
         uses: actions/upload-artifact@v2
         with:
           name: html-report
           path: htmlcov
         if: ${{ failure() }}
-
-
-  package:
-    name: Build & verify package
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-python@v2
-        with:
-          python-version: ${{env.PYTHON_LATEST}}
-
-      - run: python -m pip install build twine check-wheel-contents
-      - run: python -m build --sdist --wheel .
-      - run: ls -l dist
-      - run: check-wheel-contents dist/*.whl
-      - name: Check long_description
-        run: python -m twine check dist/*

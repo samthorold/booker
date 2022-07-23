@@ -15,6 +15,7 @@ services:
     volumes:
       - ./src:/src
       - ./tests:/tests
+      - ./artefacts:/artefacts
     ports:
       - "5005:80"
 

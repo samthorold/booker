@@ -9,6 +9,7 @@ testpaths = "tests"
 markers = ["e2e"]
 
 [tool.coverage.run]
+relative_files = true
 parallel = true
 branch = true
 source = ["ledger",]
