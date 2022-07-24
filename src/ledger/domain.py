@@ -68,7 +68,7 @@ class TransactionDoesNotBalance(PostingError):
 
 
 class Ledger:
-    """Ledger.
+    """Aggregate for the Ledger domain.
 
     The version attribute is to prevent multiple processes writing to the same
     ledger simultaneously.
@@ -113,6 +113,8 @@ class Ledger:
         original_entries = self.entries
 
         self.entries = original_entries | entries
+
+        self.version += 1
 
         return self.entries - original_entries
 

@@ -127,64 +127,35 @@ The same words may have different meanings inside each context or system.
 
 ### Ledger system
 
-Records accounts and their debits and credits.
 
-Actions include
+"Posting" debits and credits to ledgers
 
-- Creating accounts
-    - provided the account number / code is unique
-- Deleting accounts
-    - provided the account has a zero balance
-- Posting debits and credits to ledger(s)
-    - provided the transaction has a zero balance
+  - Ensuring "transactions" (grouped debits and credits) "balance" (sum to zero)
+  and are idempotent.
+  - Implenting logic of "closing" one ledger to another.
+  - Calculate account balances at a given date.
+  - Controls concurrent writes to a single ledger.
 
-Really, two contexts...
+Much of the domain logic exists to enforce _constraints_
+to maintain the _invariants_ of the system.
+Invariants are things that have to be true whenever we finish an operation.
 
-The chart of accounts system and the ledger system.
+The two words are somewhat interchangeable,
+but a constraint is a rule that restricts the possible states our model can get into,
+while an invariant is defined a little more precisely as a condition that is always true.
 
-For the chart of accounts
+Invariants
 
-    Account
-        code
-        name
-        description
-        balance to permit deleting the account
-        (last closed)
+- Ledger balance must be 0.
 
-For the ledger
+Constraints
 
-    Entry
-        ref
-        account code
-        date
-        value
+- Entries given to be posted to a ledger must sum to 0.
+- Only one thread / process can alter a ledger at a time.
 
-!!! tip
+#### Implementation
 
-    For the purposes of the ledger system,
-    the account number is taken as read.
-    Some other system manages account management.
-
-Ensures individual transactions balance and
-debit/crediting an account is idempotent.
-
-### Reporting system
-
-Records groups of accounts.
-
-Returns aggregate information - not concerned with debits and credits.
-
-Includes control accounts and financial statements.
-
-### Budgeting / Forecasting system
-
-...
-
-## Context Map
-
-
-
-## Tactical - Entities, Values, and Aggregates
+`Ledger` is an entity and an aggregate. `Entry` is a value object.
 
 ```mermaid
 classDiagram
@@ -192,6 +163,7 @@ classDiagram
   class Ledger{
     +set~Entry~ entries
     +post(entries) entries
+    +close_to(ledger) entries
     +balance(account) int
   }
   class Entry{
@@ -207,3 +179,34 @@ classDiagram
     Debit and credit amounts are represented as positve and negative values
     respectively, while money amounts are in pence to avoid floating point
     number issues.
+
+!!! tip
+
+    For the purposes of the ledger system,
+    the account number is taken as read.
+    Some other system manages accounts as an entity in their own right.
+
+### Chart of accounts
+
+```mermaid
+classDiagram
+  class Account{
+    +code str
+    +name str
+    +description str
+    +balance int
+    +delete()
+  }
+```
+
+### Reporting system
+
+Records groups of accounts.
+
+Returns aggregate information - not concerned with debits and credits.
+
+Includes control accounts and financial statements.
+
+### Budgeting / Forecasting system
+
+...
