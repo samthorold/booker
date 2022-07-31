@@ -6,6 +6,7 @@ import requests
 from ledger import config
 
 
+@pytest.mark.e2e
 @pytest.mark.usefixtures("postgres_db")
 @pytest.mark.usefixtures("restart_api")
 def test_add_and_list_ledgers():
@@ -23,6 +24,7 @@ def test_add_and_list_ledgers():
     assert name in r.json()["ledgers"]
 
 
+@pytest.mark.e2e
 @pytest.mark.usefixtures("postgres_db")
 @pytest.mark.usefixtures("restart_api")
 def test_cannot_add_duplicate_ledgers():
@@ -39,6 +41,7 @@ def test_cannot_add_duplicate_ledgers():
     assert r.status_code == 400, r.json()
 
 
+@pytest.mark.e2e
 @pytest.mark.usefixtures("postgres_db")
 @pytest.mark.usefixtures("restart_api")
 def test_create_multiple_ledgers():
@@ -56,6 +59,7 @@ def test_create_multiple_ledgers():
     assert all(name in data["ledgers"] for name in names)
 
 
+@pytest.mark.e2e
 @pytest.mark.usefixtures("postgres_db")
 @pytest.mark.usefixtures("restart_api")
 def test_post_and_balance():
@@ -87,6 +91,7 @@ def test_post_and_balance():
     assert r.json()["balance"] == 10, r.json()
 
 
+@pytest.mark.e2e
 @pytest.mark.usefixtures("postgres_db")
 @pytest.mark.usefixtures("restart_api")
 def test_close():
