@@ -15,11 +15,11 @@ def test_add_and_list_ledgers():
 
     url = config.get_api_url()
 
-    r = requests.post(f"{url}/ledgers", json=data)
+    r = requests.post(f"{url}/v1/ledgers", json=data)
     assert r.status_code == 201, r.json()
     assert r.json()["name"] == name
 
-    r = requests.get(f"{url}/ledgers")
+    r = requests.get(f"{url}/v1/ledgers")
     assert r.status_code == 200, r.json()
     assert name in r.json()["ledgers"]
 
@@ -33,11 +33,11 @@ def test_cannot_add_duplicate_ledgers():
 
     url = config.get_api_url()
 
-    r = requests.post(f"{url}/ledgers", json=data)
+    r = requests.post(f"{url}/v1/ledgers", json=data)
     assert r.status_code == 201, r.json()
     assert r.json()["name"] == name
 
-    r = requests.post(f"{url}/ledgers", json=data)
+    r = requests.post(f"{url}/v1/ledgers", json=data)
     assert r.status_code == 400, r.json()
 
 
@@ -51,9 +51,9 @@ def test_create_multiple_ledgers():
 
     for name in names:
         data = {"name": name}
-        _ = requests.post(f"{url}/ledgers", json=data)
+        _ = requests.post(f"{url}/v1/ledgers", json=data)
 
-    r = requests.get(f"{url}/ledgers")
+    r = requests.get(f"{url}/v1/ledgers")
     assert r.status_code == 200, r.json()
     data = r.json()
     assert all(name in data["ledgers"] for name in names)
@@ -68,7 +68,7 @@ def test_post_and_balance():
     url = config.get_api_url()
 
     data = {"name": name}
-    _ = requests.post(f"{url}/ledgers", json=data)
+    _ = requests.post(f"{url}/v1/ledgers", json=data)
 
     ref = "ref"
     entries = [
@@ -76,7 +76,7 @@ def test_post_and_balance():
         {"ref": ref, "account": "rev", "date": "2022-01-01", "value": -10},
     ]
     data = {"name": name, "entries": entries}
-    r = requests.post(f"{url}/post", json=data)
+    r = requests.post(f"{url}/v1/post", json=data)
     assert r.status_code == 201, r.json()
     data = r.json()
     assert len(data["posted_entries"]) == 2, data
@@ -86,7 +86,7 @@ def test_post_and_balance():
         "account": "cash",
         "date": "2022-01-01",
     }
-    r = requests.get(f"{url}/balance", json=data)
+    r = requests.get(f"{url}/v1/balance", json=data)
     assert r.status_code == 200, r.json()
     assert r.json()["balance"] == 10, r.json()
 
@@ -102,7 +102,7 @@ def test_close():
 
     for name in [child, parent]:
         data = {"name": name}
-        _ = requests.post(f"{url}/ledgers", json=data)
+        _ = requests.post(f"{url}/v1/ledgers", json=data)
 
     ref = uuid.uuid4().hex
     entries = [
@@ -110,7 +110,7 @@ def test_close():
         {"ref": ref, "account": "rev", "date": "2022-01-01", "value": -10},
     ]
     data = {"name": child, "entries": entries}
-    _ = requests.post(f"{url}/post", json=data)
+    _ = requests.post(f"{url}/v1/post", json=data)
 
     data = {
         "ref": uuid.uuid4().hex,
@@ -118,7 +118,7 @@ def test_close():
         "parent": parent,
         "date": "2022-01-01",
     }
-    r = requests.post(f"{url}/close", json=data)
+    r = requests.post(f"{url}/v1/close", json=data)
     print(r.json())
     assert r.status_code == 201, r.json()
     assert len(r.json()["posted_entries"]) == 2
@@ -128,7 +128,7 @@ def test_close():
         "account": "cash",
         "date": "2022-01-01",
     }
-    r = requests.get(f"{url}/balance", json=data)
+    r = requests.get(f"{url}/v1/balance", json=data)
     assert r.status_code == 200, r.json()
     assert r.json()["balance"] == 10, r.json()
 
@@ -137,5 +137,5 @@ def test_close():
         "account": "cash",
         "date": "2022-01-01",
     }
-    r = requests.get(f"{url}/balance", json=data)
+    r = requests.get(f"{url}/v1/balance", json=data)
     assert r.json()["balance"] == 0, r.json()
