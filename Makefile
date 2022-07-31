@@ -18,12 +18,6 @@ logs:
 docs-serve:
 	venv/bin/python -m mkdocs serve
 
-docs-build:
-	venv/bin/python -m mkdocs build
-
-docs-watch:
-	venv/bin/python -m mkdocs serve
-
 docs-deploy:
 	venv/bin/python -m mkdocs gh-deploy
 
